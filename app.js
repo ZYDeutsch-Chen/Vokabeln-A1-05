@@ -1,11 +1,12 @@
-﻿// 强制刷新缓存机制
+// 强制刷新缓存机制
 (function() {
-    const CURRENT_VERSION = '1.0.0';
+    const CURRENT_VERSION = '1.0.1';  // 版本更新以清除缓存
     const VERSION_STORAGE_KEY = 'a1_verb_version';
-    
+
     const storedVersion = sessionStorage.getItem(VERSION_STORAGE_KEY);
     if (storedVersion && storedVersion !== CURRENT_VERSION) {
         sessionStorage.clear();
+        localStorage.clear();  // 清除localStorage缓存
         if (window.location.protocol === 'file:') {
             const separator = window.location.href.includes('?') ? '&' : '?';
             window.location.href = window.location.href.split('?')[0] + separator + '_v=' + CURRENT_VERSION + '&_t=' + Date.now();
@@ -14,9 +15,9 @@
         }
         return;
     }
-    
+
     sessionStorage.setItem(VERSION_STORAGE_KEY, CURRENT_VERSION);
-    
+
     if (window.location.protocol === 'file:') {
         const currentUrl = window.location.href;
         if (!currentUrl.includes('_v=')) {
@@ -1331,31 +1332,32 @@ function unlockNextTheme() {
 
 // ==================== 主题与数据 ====================
 
-const themeDefinitions = {
-    "旅行交通": ["kommen","gehen","fahren","fliegen","reisen","wandern","steigen","einsteigen","aussteigen","abfahren","abfliegen","ankommen","mitkommen","weg sein","auf sein","zu sein","geöffnet sein","geschlossen sein","öffnen","schließen","dauern","enden","beginnen","anfangen","aufhören","warten","besichtigen","regnen","scheinen"],
-    "饮食消费": ["essen","trinken","frühstücken","kochen","backen","grillen","schmecken","riechen","kaufen","einkaufen","verkaufen","bestellen","bezahlen","zahlen","kosten","überweisen","holen","bekommen","nehmen","anbieten","verdienen","mitbringen","mitnehmen","finden","brauchen","feiern","gratulieren","schenken","einladen","besuchen"],
-    "居住卫生": ["wohnen","leben","bleiben","mieten","vermieten","umziehen","sich duschen","sich baden","waschen","putzen","sich anziehen","sich ausziehen","sich kümmern","rauchen","aufstehen","schlafen","sitzen","liegen","stehen","reparieren","aufräumen","ausmachen","anmachen","aufmachen","zumachen","an sein","aus sein"],
-    "学习爱好": ["lernen","studieren","buchstabieren","lesen","schreiben","unterschreiben","wiederholen","üben","verstehen","wissen","kennen","bedeuten","erklären","vergessen","sprechen","antworten","fragen","hören","sehen","arbeiten","drucken","anklicken","ankreuzen","ausfüllen","laufen","schwimmen","wandern","spielen","fernsehen","Rad fahren","tanzen","gewinnen"],
-    "社交情感": ["heißen","grüßen","kennen lernen","treffen","helfen","sagen","telefonieren","anrufen","lachen","erzählen","schicken","empfehlen","erlauben","heiraten","sich anmelden","mitmachen","abholen","lieben","mögen","gefallen","sich freuen","glauben","hoffen","wünschen","fehlen","danken","entschuldigen","bitten"],
-    "其他": ["sein","werden","haben","es gibt","bekannt sein","besetzt sein","verboten sein","geboren sein","verheiratet sein","gestorben sein","aussehen","können","müssen","möchten","wollen","sollen","dürfen","machen","tun","legen","stellen","halten","geben","abgeben","bringen","gehören","benutzen","drücken","passieren"]
-};
+// ==================== 安全和用户体验 ====================
 
-function buildThemeVerbs() {
-    const result = {};
-    Object.keys(themeDefinitions).forEach(theme => {
-        const list = themeDefinitions[theme];
-        result[theme] = allVerbs.filter(v => list.includes(v.infinitive));
-    });
-    return result;
-}
+// 禁用右键菜单
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
 
-const themeVerbMap = buildThemeVerbs();
-
-function getCurrentThemeVerbs() {
-    const theme = learningProgress.currentTheme;
-    if (!theme) return [];
-    return themeVerbMap[theme] || [];
-}
+// 禁用一些快捷键
+document.addEventListener('keydown', function(e) {
+    // 禁用F12开发者工具
+    if (e.key === 'F12') {
+        e.preventDefault();
+        return false;
+    }
+    // 禁用Ctrl+Shift+I (开发者工具)
+    if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+        e.preventDefault();
+        return false;
+    }
+    // 禁用Ctrl+U (查看源码)
+    if (e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+        return false;
+    }
+});
 
 // ==================== 初始化 ====================
 
@@ -1363,25 +1365,32 @@ document.addEventListener('DOMContentLoaded', function() {
     domCache.init();
     loadUserConfig();
     loadLearningProgress();
-    
+
+    // 调试信息
+    if (IS_DEV) {
+        console.log('Current theme:', learningProgress.currentTheme);
+        console.log('Theme verbs count:', getCurrentThemeVerbs().length);
+        console.log('First 5 theme verbs:', getCurrentThemeVerbs().slice(0, 5).map(v => v.infinitive));
+    }
+
     if (!userConfig.setupCompleted) {
         showModal('setup-modal');
         return;
     }
-    
+
     // 如果已经完成设置，确保顶部栏显示
     if (domCache.fixedTopBar) {
         domCache.fixedTopBar.style.display = 'flex';
     }
-    
+
     if (!learningProgress || !learningProgress.themes) {
         initializeLearningProgress();
     }
-    
+
     updateHeaderDescription();
     updateTopBarProgress();
     loadCurrentTheme();
-    
+
     document.querySelectorAll('.top-bar-mode-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const mode = btn.dataset.mode;
@@ -1393,7 +1402,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     document.querySelectorAll('.top-bar-theme-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const theme = btn.dataset.theme;
