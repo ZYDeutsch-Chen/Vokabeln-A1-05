@@ -277,6 +277,15 @@ body {
         margin-left: 0;
     }
 
+    .top-bar-mode-btn .icon {
+        display: none;
+    }
+
+    .top-bar-mode-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
     .top-bar-center {
         width: auto;
         justify-content: flex-start;
@@ -997,6 +1006,12 @@ body.test-mode .test-instruction {
 
 body.test-mode #test-progress {
     display: block;
+}
+
+@media (max-width: 768px) {
+    body.test-mode #test-progress {
+        display: none;
+    }
 }
 
 /* ==================== 触摸设备优化 ==================== */
