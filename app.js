@@ -1217,7 +1217,7 @@ function renderTestCard() {
     const isMeaning = type === 'test1';
     container.innerHTML = `
         <div class="test-card">
-            <div class="test-meta">第 ${currentIndex + 1} / ${questions.length} 题（${isMeaning ? '语义测试' : '配价测试'}）</div>
+            <div class="test-meta">第 ${currentIndex + 1} / ${questions.length} 题（${isMeaning ? '请选择含义' : '配价测试'}）</div>
             <div class="test-question">
                 <div class="q-verb">${formatSeparableVerb(q.infinitive)}</div>
                 <div class="q-example">${q.example || ''}</div>
@@ -1281,10 +1281,10 @@ function finishTest() {
                 themeData.test2.status = 'available';
             }
             unlockNextTheme();
-            alert(`语义测试通过，正确率 ${(rate*100).toFixed(0)}%`);
+            alert(`测试通过，正确率 ${(rate*100).toFixed(0)}%`);
             switchMode('learning');
         } else {
-            alert(`语义测试未通过，正确率 ${(rate*100).toFixed(0)}%，请再试一次`);
+            alert(`测试未通过，正确率 ${(rate*100).toFixed(0)}%，请再试一次`);
             themeData.status = 'learning';
             themeData.test1.status = 'available';
             switchMode('test');
