@@ -44,6 +44,8 @@ html {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -57,6 +59,11 @@ body {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 /* 固定悬浮栏 */
@@ -797,6 +804,10 @@ body.test-mode .test-instruction {
     text-align: left;
     color: #2c3e50;
     width: 100%;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 .option-btn:hover {
@@ -897,6 +908,13 @@ body.test-mode .test-instruction {
     cursor: pointer;
 }
 
+.radio-label {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
 .radio-label input[type="radio"]:checked + span {
     color: #3498db;
     font-weight: 600;
@@ -979,6 +997,51 @@ body.test-mode .test-instruction {
 
 body.test-mode #test-progress {
     display: block;
+}
+
+/* ==================== 触摸设备优化 ==================== */
+
+/* 为触摸设备添加触摸反馈 */
+@media (hover: none) and (pointer: coarse) {
+    .card:hover {
+        transform: none;
+    }
+
+    .card:active {
+        transform: scale(0.98);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .option-btn:hover {
+        transform: none;
+        border-color: #e0e0e0;
+        background: white;
+    }
+
+    .option-btn:active {
+        transform: scale(0.98);
+        background: #e3f2fd;
+        border-color: #3498db;
+    }
+
+    .top-bar-mode-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: none;
+    }
+
+    .top-bar-mode-btn:active {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(0.98);
+    }
+
+    .speak-btn:hover {
+        transform: none;
+    }
+
+    .speak-btn:active {
+        transform: scale(0.95);
+    }
 }
 
 /* ==================== 移动端优化 ==================== */
