@@ -728,7 +728,7 @@ body.test-mode .test-instruction {
     min-height: var(--card-height);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     box-sizing: border-box;
 }
 
@@ -797,22 +797,26 @@ body.test-mode .test-instruction {
 .options {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     flex: 1;
 }
 
 .option-btn {
-    padding: 16px 20px;
+    padding: 18px 22px;
     background: white;
     border: 2px solid #e0e0e0;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 500;
     text-align: left;
     color: #2c3e50;
     width: 100%;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
     -webkit-user-select: text;
     -moz-user-select: text;
     -ms-user-select: text;
@@ -1120,26 +1124,55 @@ body.test-mode #test-progress {
     }
     
     .test-card {
-        padding: 16px;
+        padding: 20px;
+        min-height: 420px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
-    
+
     .test-meta {
-        font-size: 0.85rem;
-        margin-bottom: 16px;
+        font-size: 0.8rem;
+        margin-bottom: 12px;
+        flex-shrink: 0;
     }
-    
+
+    .test-question {
+        flex-shrink: 0;
+        margin-bottom: 20px;
+    }
+
     .q-verb {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        margin-bottom: 10px;
     }
-    
+
     .q-example {
-        font-size: 1rem;
-        padding: 10px;
+        font-size: 0.95rem;
+        padding: 8px;
+        margin-bottom: 0;
     }
-    
+
+    .options {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
     .option-btn {
-        padding: 12px 16px;
-        font-size: 1rem;
+        padding: 16px 18px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        border-radius: 10px;
+        min-height: 55px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        line-height: 1.4;
+        flex: 1;
     }
     
     .modal-content {
@@ -1218,26 +1251,55 @@ body.test-mode #test-progress {
     }
     
     .test-card {
-        padding: 12px;
+        padding: 16px;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
-    
+
     .test-meta {
-        font-size: 0.8rem;
-        margin-bottom: 12px;
+        font-size: 0.75rem;
+        margin-bottom: 8px;
+        flex-shrink: 0;
     }
-    
+
+    .test-question {
+        flex-shrink: 0;
+        margin-bottom: 16px;
+    }
+
     .q-verb {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+        margin-bottom: 8px;
     }
-    
+
     .q-example {
-        font-size: 0.9rem;
-        padding: 8px;
+        font-size: 0.85rem;
+        padding: 6px;
+        margin-bottom: 0;
     }
-    
+
+    .options {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
     .option-btn {
-        padding: 10px 14px;
-        font-size: 0.95rem;
+        padding: 14px 16px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        line-height: 1.4;
+        flex: 1;
     }
     
     .modal-content {
