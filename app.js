@@ -1,4 +1,4 @@
-﻿// 强制刷新缓存机制
+// 强制刷新缓存机制
 (function() {
     const CURRENT_VERSION = '1.0.1';  // 版本更新以清除缓存
     const VERSION_STORAGE_KEY = 'a1_verb_version';
