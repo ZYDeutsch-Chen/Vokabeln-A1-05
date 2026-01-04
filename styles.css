@@ -317,6 +317,7 @@ body {
         width: auto;
         justify-content: flex-start;
         flex: 0 0 auto;
+        order: 2;
         min-width: 0;
     }
 
@@ -324,6 +325,7 @@ body {
         width: auto;
         justify-content: flex-end;
         flex: 1 1 auto;
+        order: 2;
         min-width: 0;
     }
 
@@ -1269,9 +1271,8 @@ body.test-mode #test-progress {
         padding: 8px 6px;
         font-size: 0.7rem;
         min-height: 40px;
-        gap: 2px;
+        gap: 3px;
         max-width: 85px;
-        flex-direction: column;
     }
 
     .feedback-question {
@@ -1292,7 +1293,7 @@ body.test-mode #test-progress {
         padding: 10px;
         width: 85%;
         max-width: 240px;
-        top: 32%;
+        top: 28%;
     }
 
     .card-back .example-translation {
@@ -1444,9 +1445,8 @@ body.test-mode #test-progress {
         padding: 6px 4px;
         font-size: 0.65rem;
         min-height: 35px;
-        gap: 1px;
+        gap: 2px;
         max-width: 75px;
-        flex-direction: column;
     }
 
     .feedback-question {
@@ -1467,7 +1467,7 @@ body.test-mode #test-progress {
         padding: 8px;
         width: 80%;
         max-width: 180px;
-        top: 32%;
+        top: 28%;
     }
 
     .card-back .example-translation {
@@ -1645,9 +1645,9 @@ body.test-mode #test-progress {
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     min-height: 45px;
     justify-content: center;
     color: white;
