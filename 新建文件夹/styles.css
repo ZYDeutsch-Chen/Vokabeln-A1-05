@@ -172,33 +172,11 @@ body {
     font-weight: 500;
 }
 
-.theme-selector {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    color: #2c3e50;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 4px 8px;
-    min-width: 120px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.theme-selector:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-}
-
-.theme-selector:hover {
-    background: rgba(255, 255, 255, 1);
-}
-
-.theme-selector option {
-    padding: 4px;
-    background: white;
-    color: #2c3e50;
+.current-theme-name {
+    font-size: 0.95rem;
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .top-bar-right {
@@ -376,10 +354,8 @@ body {
         font-size: 0.75rem;
     }
 
-    .theme-selector {
-        font-size: 0.75rem;
-        padding: 3px 6px;
-        min-width: 100px;
+    .current-theme-name {
+        font-size: 0.85rem;
     }
 
     body {
@@ -399,10 +375,6 @@ body {
 
     body.test-mode {
         --card-height: 380px;
-    }
-
-    body.test-mode .footer {
-        display: none;
     }
 
     .fixed-top-bar {
@@ -1218,7 +1190,11 @@ body.test-mode #test-progress {
 
 @media (max-width: 768px) {
     body.test-mode #test-progress {
-        display: none !important;
+        position: static;
+        transform: none;
+        margin: 15px auto 0;
+        display: block;
+        width: fit-content;
     }
 }
 
@@ -1270,9 +1246,6 @@ body.test-mode #test-progress {
 /* ==================== 移动端优化 ==================== */
 
 @media (max-width: 768px) {
-    body.test-mode .footer {
-        display: none;
-    }
     .verb-name {
         font-size: 1.8rem;
     }
@@ -1298,9 +1271,8 @@ body.test-mode #test-progress {
         padding: 8px 6px;
         font-size: 0.7rem;
         min-height: 40px;
-        gap: 2px;
+        gap: 3px;
         max-width: 85px;
-        flex-direction: column;
     }
 
     .feedback-question {
@@ -1321,7 +1293,7 @@ body.test-mode #test-progress {
         padding: 10px;
         width: 85%;
         max-width: 240px;
-        top: 32%;
+        top: 28%;
     }
 
     .card-back .example-translation {
@@ -1383,8 +1355,8 @@ body.test-mode #test-progress {
     }
     
     .test-card {
-        padding: 16px;
-        min-height: 350px;
+        padding: 20px;
+        min-height: 420px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -1417,8 +1389,8 @@ body.test-mode #test-progress {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        gap: 8px;
-        margin-top: 15px;
+        gap: 10px;
+        margin-top: 20px;
     }
 
     .option-btn {
@@ -1473,9 +1445,8 @@ body.test-mode #test-progress {
         padding: 6px 4px;
         font-size: 0.65rem;
         min-height: 35px;
-        gap: 1px;
+        gap: 2px;
         max-width: 75px;
-        flex-direction: column;
     }
 
     .feedback-question {
@@ -1496,7 +1467,7 @@ body.test-mode #test-progress {
         padding: 8px;
         width: 80%;
         max-width: 180px;
-        top: 32%;
+        top: 28%;
     }
 
     .card-back .example-translation {
@@ -1577,8 +1548,8 @@ body.test-mode #test-progress {
     }
     
     .test-card {
-        padding: 12px;
-        min-height: 320px;
+        padding: 16px;
+        min-height: 400px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -1611,8 +1582,8 @@ body.test-mode #test-progress {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        gap: 6px;
-        margin-top: 12px;
+        gap: 8px;
+        margin-top: 16px;
     }
 
     .option-btn {
@@ -1674,9 +1645,9 @@ body.test-mode #test-progress {
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     min-height: 45px;
     justify-content: center;
     color: white;

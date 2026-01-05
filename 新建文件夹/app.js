@@ -199,7 +199,6 @@ const domCache = {
         this.progressCompleted = document.getElementById('progress-completed');
         this.progressLearning = document.getElementById('progress-learning');
         this.progressLocked = document.getElementById('progress-locked');
-        this.themeSelector = document.getElementById('theme-selector');
     },
     clear: function() {
         this.totalCountElement = null;
@@ -316,46 +315,46 @@ function loadUserConfig() {
             try {
                 userConfig = JSON.parse(saved);
                 if (!userConfig.userType || !userConfig.ability) {
-                    warn('用户配置不完整，使用默认配置');
-                    setDefaultUserConfig();
+                    warn('用户配置不完整，重置配置');
+                    userConfig = {
+                        userType: null,
+                        ability: null,
+                        setupCompleted: false
+                    };
+                    setTimeout(() => {
+                        try {
+                            localStorage.removeItem('userConfig');
+                        } catch (e) {
+                            error('删除用户配置失败:', e);
+                        }
+                    }, 0);
                 }
             } catch (parseError) {
-                error('解析用户配置失败，使用默认配置');
-                setDefaultUserConfig();
+                error('解析用户配置失败:', parseError);
+                userConfig = {
+                    userType: null,
+                    ability: null,
+                    setupCompleted: false
+                };
             }
-        } else {
-            // 首次使用，自动设置默认配置
-            setDefaultUserConfig();
         }
     } catch (e) {
-        error('加载用户配置失败，使用默认配置');
-        setDefaultUserConfig();
+        error('加载用户配置失败:', e);
+        userConfig = {
+            userType: null,
+            ability: null,
+            setupCompleted: false
+        };
     }
-}
-
-function setDefaultUserConfig() {
-    userConfig = {
-        userType: 'adult', // 成年人
-        ability: 'good',   // 良好
-        setupCompleted: true
-    };
-    setTimeout(() => {
-        try {
-            localStorage.setItem('userConfig', JSON.stringify(userConfig));
-        } catch (e) {
-            error('保存默认用户配置失败:', e);
-        }
-    }, 0);
 }
 
 function initializeLearningProgress() {
     const themes = themeOrder[userConfig.userType];
-
     const progress = {
         currentThemeIndex: 0,
         currentMode: 'learning',
         currentTestType: null,
-        currentTheme: themes ? themes[0] : null,
+        currentTheme: themes[0] || null,
         themes: {},
         carryOverMistakes: []
     };
@@ -524,41 +523,12 @@ function updateTopBarProgress() {
 
 function updateCurrentThemeDisplay() {
     const currentTheme = learningProgress.currentTheme;
-    const themeSelector = domCache.themeSelector || domCache.get('theme-selector');
-
-    if (themeSelector) {
-        // 清空现有选项
-        themeSelector.innerHTML = '<option value="">选择主题...</option>';
-
-        // 获取所有可用的主题
-        const themes = themeOrder[userConfig.userType] || [];
-
-        // 添加已解锁的主题选项
-        themes.forEach(theme => {
-            const themeData = learningProgress.themes[theme];
-            if (themeData && themeData.status !== 'locked') {
-                const option = document.createElement('option');
-                option.value = theme;
-                option.textContent = theme;
-                if (theme === currentTheme) {
-                    option.selected = true;
-                }
-                themeSelector.appendChild(option);
-            }
-        });
-
-        // 如果当前没有选择主题，选择第一个可用的主题
-        if (!currentTheme && themes.length > 0) {
-            const firstAvailableTheme = themes.find(theme => {
-                const themeData = learningProgress.themes[theme];
-                return themeData && themeData.status !== 'locked';
-            });
-            if (firstAvailableTheme) {
-                learningProgress.currentTheme = firstAvailableTheme;
-                saveLearningProgress();
-                themeSelector.value = firstAvailableTheme;
-            }
-        }
+    const themeNameElement = domCache.currentThemeName || domCache.get('current-theme-name');
+    
+    if (currentTheme && themeNameElement) {
+        themeNameElement.textContent = currentTheme;
+    } else if (themeNameElement) {
+        themeNameElement.textContent = '-';
     }
 }
 
@@ -1001,32 +971,33 @@ const themeMapping = {
 // 根据主题分类重新组织动词数据
 function organizeVerbsByTheme() {
     const organized = {};
-
+    
     // 初始化主题
     Object.keys(themeMapping).forEach(theme => {
         organized[theme] = [];
     });
-
-
+    
     // 将动词分配到对应主题
     allVerbs.forEach(verb => {
+        // 提取动词原形（去掉sich前缀）
+        const verbBase = verb.infinitive.replace(/^sich /, '').split(' ')[0];
+        
         // 查找动词所属主题
         let found = false;
         for (const [theme, verbs] of Object.entries(themeMapping)) {
-            if (verbs.includes(verb.infinitive)) {
+            if (verbs.includes(verbBase) || verbs.includes(verb.infinitive)) {
                 organized[theme].push(verb);
                 found = true;
                 break;
             }
         }
-
+        
         // 如果没找到，放入"其他"主题
         if (!found) {
             organized['其他'].push(verb);
         }
     });
-
-
+    
     return organized;
 }
 
@@ -1042,12 +1013,9 @@ function getCurrentThemeVerbs() {
 // ==================== 学习模式 ====================
 
 function loadCurrentTheme() {
-    console.log('loadCurrentTheme called, setupCompleted:', userConfig.setupCompleted);
     if (!userConfig.setupCompleted) return;
 
     const verbs = getCurrentThemeVerbs();
-    console.log('Current theme verbs:', verbs.length);
-
     if (!domCache.cardsContainer) {
         domCache.init();
     }
@@ -1095,8 +1063,6 @@ function renderLearningCards(verbs) {
         return;
     }
 
-    // 计算可见卡片数量
-    let visibleCardCount = 0;
     verbs.forEach((verb, index) => {
         // 检查是否应该隐藏卡片
         const state = cardStates[verb.infinitive];
@@ -1106,20 +1072,7 @@ function renderLearningCards(verbs) {
 
         const card = createLearningCard(verb, index);
         domCache.cardsContainer.appendChild(card);
-        visibleCardCount++;
     });
-
-    // 如果当前是学习模式且没有可见的卡片，自动跳转到测试模式
-    if (learningProgress.currentMode === 'learning' && visibleCardCount === 0) {
-        // 检查当前主题是否有可用的测试
-        const currentThemeData = learningProgress.themes[learningProgress.currentTheme];
-        if (currentThemeData && (currentThemeData.test1.status === 'available' || currentThemeData.test2.status === 'available')) {
-            setTimeout(() => {
-                const nextTestType = currentThemeData.test2.status === 'available' ? 'test2' : 'test1';
-                startTest(nextTestType);
-            }, 500); // 短暂延迟，让用户看到空的卡片容器
-        }
-    }
 }
 
 function createLearningCard(verb, index) {
@@ -1804,35 +1757,31 @@ function resetCardStates() {
 // ==================== 初始化 ====================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded fired');
     domCache.init();
-    console.log('domCache initialized');
-
     loadUserConfig();
-    console.log('User config loaded:', userConfig);
-
     loadLearningProgress();
-    console.log('Learning progress loaded:', learningProgress);
-
     loadCardStates();
-    console.log('Card states loaded');
 
-    // 配置已自动完成，无需显示设置界面
+    // 调试信息
+    if (IS_DEV) {
+        console.log('Current theme:', learningProgress.currentTheme);
+        console.log('Theme verbs count:', getCurrentThemeVerbs().length);
+        console.log('First 5 theme verbs:', getCurrentThemeVerbs().slice(0, 5).map(v => v.infinitive));
+    }
+
+    if (!userConfig.setupCompleted) {
+        showModal('setup-modal');
+        return;
+    }
 
     // 如果已经完成设置，确保顶部栏显示
     if (domCache.fixedTopBar) {
         domCache.fixedTopBar.style.display = 'flex';
-        console.log('Top bar displayed');
     }
 
     if (!learningProgress || !learningProgress.themes) {
-        console.log('Initializing learning progress...');
         initializeLearningProgress();
-        console.log('Learning progress initialized:', learningProgress);
     }
-
-    console.log('Final current theme:', learningProgress.currentTheme);
-    console.log('Theme verbs count:', getCurrentThemeVerbs().length);
 
     updateHeaderDescription();
     updateTopBarProgress();
@@ -1860,18 +1809,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    // 主题选择器事件监听
-    const themeSelector = document.getElementById('theme-selector');
-    if (themeSelector) {
-        themeSelector.addEventListener('change', () => {
-            const selectedTheme = themeSelector.value;
-            if (selectedTheme && learningProgress.themes[selectedTheme] && learningProgress.themes[selectedTheme].status !== 'locked') {
-                learningProgress.currentTheme = selectedTheme;
-                saveLearningProgress();
-                loadCurrentTheme();
-                updateCurrentThemeDisplay(); // 重新更新显示
-            }
-        });
-    }
 });

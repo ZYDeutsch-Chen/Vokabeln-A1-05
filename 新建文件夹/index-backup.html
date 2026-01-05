@@ -19,31 +19,31 @@
             <p>请先完成初始设置</p>
             <div class="setup-form">
                 <div class="setup-group">
-                    <label for="userType-adult">用户类型：</label>
+                    <label>用户类型：</label>
                     <div class="radio-group">
                         <label class="radio-label">
-                            <input type="radio" id="userType-adult" name="userType" value="adult" checked>
+                            <input type="radio" name="userType" value="adult" checked>
                             <span>成人</span>
                         </label>
                         <label class="radio-label">
-                            <input type="radio" id="userType-teenager" name="userType" value="teenager">
+                            <input type="radio" name="userType" value="teenager">
                             <span>青少年</span>
                         </label>
                     </div>
                 </div>
                 <div class="setup-group">
-                    <label for="ability-normal">学习能力：</label>
+                    <label>学习能力：</label>
                     <div class="radio-group">
                         <label class="radio-label">
-                            <input type="radio" id="ability-normal" name="ability" value="normal" checked>
+                            <input type="radio" name="ability" value="normal" checked>
                             <span>普通</span>
                         </label>
                         <label class="radio-label">
-                            <input type="radio" id="ability-good" name="ability" value="good">
+                            <input type="radio" name="ability" value="good">
                             <span>良好</span>
                         </label>
                         <label class="radio-label">
-                            <input type="radio" id="ability-excellent" name="ability" value="excellent">
+                            <input type="radio" name="ability" value="excellent">
                             <span>优秀</span>
                         </label>
                     </div>
@@ -70,17 +70,10 @@
             <div class="top-bar-center">
                 <div class="current-theme-display" id="current-theme-display">
                     <span class="current-theme-label">学习中：</span>
-                    <select class="theme-selector" id="theme-selector">
-                        <option value="">选择主题...</option>
-                    </select>
+                    <span class="current-theme-name" id="current-theme-name">-</span>
                 </div>
             </div>
             <div class="top-bar-right">
-                <div class="top-bar-controls">
-                    <button class="reset-cards-btn" onclick="resetCardStates()" title="重置所有卡片状态">
-                        <span class="icon">🔄</span>
-                    </button>
-                </div>
                 <div class="top-bar-progress" id="top-bar-progress">
                     <div class="progress-stat completed">
                         <span class="progress-stat-label">已完成:</span>
@@ -132,16 +125,16 @@
         请找出和德语动词匹配的选项：
     </div>
     
+    <!-- 测试进度 -->
+    <div id="test-progress" style="display: none;"></div>
+    
     <!-- 卡片容器 -->
     <div class="cards-container" id="cards-container">
         <div class="loader">
             <span class="icon icon-spin">⟳</span> 正在加载动词卡片...
         </div>
     </div>
-
-    <!-- 测试进度 -->
-    <div id="test-progress" style="display: none;"></div>
-
+    
     <div class="footer">
         <p>德语A1动词学习卡片 | 按主题分类</p>
         <p>总计: <span id="total-count">0</span>个动词</p>
